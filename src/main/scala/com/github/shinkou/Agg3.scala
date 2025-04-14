@@ -3,6 +3,7 @@ package com.github.shinkou
 import com.opencsv.{CSVReaderHeaderAwareBuilder, CSVWriterBuilder, RFC4180Parser}
 import java.io.{FileReader, Writer}
 import scala.jdk.CollectionConverters._
+import scala.math.{pow,sqrt}
 
 
 trait Agg3:
@@ -56,7 +57,19 @@ Examples:
               case "avg" | "mean" => v.map(_(col).toDouble).sum / v.length
               case "count" => v.length
               case "max" => v.map(_(col).toDouble).max
+              case "median" =>
+                val l = v.map(_(col).toDouble).sorted
+                v.length % 2 match
+                case 1 =>
+                  if 1 == v.length then
+                    l(0)
+                  else
+                    l(v.length / 2)
+                case _ => (l(v.length / 2) + l(v.length / 2 - 1)) / 2
               case "min" => v.map(_(col).toDouble).min
+              case "stddev" =>
+                val mean = v.map(_(col).toDouble).sum / v.length
+                sqrt(v.map(r => pow(r(col).toDouble - mean, 2)).sum / v.length)
               case "sum" => v.map(_(col).toDouble).sum
               case _ => throw IllegalArgumentException("Invalid operation")
           case 1 =>
@@ -64,7 +77,24 @@ Examples:
               case "avg" | "mean" => v.map(_(col).toDouble).sum / v.length
               case "count" => v.length
               case "max" => v.map(_(col).toInt).max
+              case "median" =>
+                val l = v.map(_(col).toInt).sorted
+                v.length % 2 match
+                case 1 =>
+                  if 1 == v.length then
+                    l(0)
+                  else
+                    l(v.length / 2)
+                case _ =>
+                  val a = (l(v.length / 2).toDouble + l(v.length / 2 - 1).toDouble) / 2
+                  if a.toInt.toDouble == a then
+                    a.toInt
+                  else
+                    a
               case "min" => v.map(_(col).toInt).min
+              case "stddev" =>
+                val mean = v.map(_(col).toDouble).sum / v.length
+                sqrt(v.map(r => pow(r(col).toDouble - mean, 2)).sum / v.length)
               case "sum" => v.map(_(col).toInt).sum
               case _ => throw IllegalArgumentException("Invalid operation")
           case _ =>

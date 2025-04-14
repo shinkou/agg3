@@ -62,7 +62,8 @@ where
 | CSV\_FILEPATH | file path of the CSV                                               | "../Documents/rawdata.csv"                   |
 | COL\_OPS<n>   | column-operations in the form of: column\_name [ ":" operation ]\* | "order:count", "score:avg", "salary:max:min" |
 
-Available operations are: "avg", "count", "max", "min", and "sum"
+Available operations are: "avg", "count", "max", "median", "min", "stddev",
+and "sum"
 
 and **PROP** are
 
